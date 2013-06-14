@@ -7,15 +7,20 @@ var MMORPG = function (x, y, options) {
 
     this.x = x;
     this.y = y;
+    this.assets = [];
     this.canvas = null;
     this.ctx = null;
     this.options = {
         wireframe: true,
+        wireframe_tile: [],
         tiles: {
-            x: Math.ceil(window.innerWidth / this.x),
-            y: Math.ceil(window.innerHeight / this.y)
+            x: window.innerWidth / this.x,
+            y: window.innerHeight / this.y
         }
     }
+
+    this.assets["grass.png"] = document.createElement("image");
+    this.assets["grass.png"].src = "assets/grass.png";
 
     this._createCanvas = function () {
         console.log(this.start_text);
@@ -31,6 +36,22 @@ var MMORPG = function (x, y, options) {
         x: 0,
         y: 0
     }
+    
+    this._bindEvents = function(){
+
+        this.canvas.addEventListener("click",function(e){
+            
+            var tile = {};
+            tile.x = e.clientX / (window.innerWidth / this.options.tiles.x) | 0,
+            tile.y = e.clientY / (window.innerHeight / this.options.tiles.y) | 0,
+            tile.n = this.options.tiles.x * (tile.y) + tile.x,
+            tile.n_x = (window.innerWidth / this.options.tiles.x) * tile.x,
+            tile.n_y = (window.innerHeight / this.options.tiles.y) * tile.y
+
+            this.options.wireframe_tile[tile.n] = tile;
+
+        }.bind(this),false);
+    };
 
     this._drawWireframe = function () {
 
@@ -42,7 +63,7 @@ var MMORPG = function (x, y, options) {
         for (i = 0; i < this.options.tiles.y; i++) {
             this.ctx.moveTo(x, y);
             this.ctx.lineTo(window.innerWidth, y);
-            y += 32;
+            y += this.y;
         };
 
         x = 0;
@@ -51,7 +72,7 @@ var MMORPG = function (x, y, options) {
         for (i = 0; i < this.options.tiles.x; i++) {
             this.ctx.moveTo(x, y);
             this.ctx.lineTo(x, window.innerHeight);
-            x += 32;
+            x += this.x;
         };
 
         this.ctx.lineWidth = 1;
@@ -59,8 +80,16 @@ var MMORPG = function (x, y, options) {
         this.ctx.stroke();
     };
 
+    this._drawTiles = function(){
+        this.options.wireframe_tile.forEach(function(data,i){
+            this.ctx.fillRect(data.n_x,data.n_y,32,32)
+            this.ctx.drawImage(this.assets["grass.png"],data.n_x,data.n_y);
+        }.bind(this));
+    }
+
     this.init = function () {
         this._createCanvas();
+        this._bindEvents();
 
         var that = this;
         (function animloop(){
@@ -79,8 +108,10 @@ var MMORPG = function (x, y, options) {
         if (this.options.wireframe)
             this._drawWireframe();
 
+        this._drawTiles();
     }
 }
+
 
 
 window.requestAnimFrame = (function(){
