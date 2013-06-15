@@ -7,9 +7,12 @@ var MMORPG = function (x, y, options) {
 
     this.x = x;
     this.y = y;
-    this.assets = [];
+    this.assets = {
+        list:[]
+    };
     this.canvas = null;
     this.ctx = null;
+    this._isMouseMoving = false;
     this.options = {
         wireframe: true,
         wireframe_tile: [],
@@ -19,8 +22,12 @@ var MMORPG = function (x, y, options) {
         }
     }
 
-    this.assets["grass.png"] = document.createElement("image");
-    this.assets["grass.png"].src = "assets/grass.png";
+    this.assets.addImage = function(src){
+        this.assets.list.push(src);
+    }.bind(this);
+    
+    this.assets.addImage("assets/TileA2.png");
+    this.assets.addImage("assets/grass.png");
 
     this._createCanvas = function () {
         console.log(this.start_text);
@@ -38,8 +45,15 @@ var MMORPG = function (x, y, options) {
     }
     
     this._bindEvents = function(){
-
-        this.canvas.addEventListener("click",function(e){
+        this.canvas.addEventListener("mousedown",function(e){
+            this._isMouseMoving = true;
+        }.bind(this),false);
+        this.canvas.addEventListener("mouseup",function(e){
+            this._isMouseMoving = false;
+        }.bind(this),false);
+        this.canvas.addEventListener("mousemove",function(e){
+            
+            if(!this._isMouseMoving) return;
             
             var tile = {};
             tile.x = e.clientX / (window.innerWidth / this.options.tiles.x) | 0,
@@ -82,8 +96,7 @@ var MMORPG = function (x, y, options) {
 
     this._drawTiles = function(){
         this.options.wireframe_tile.forEach(function(data,i){
-            this.ctx.fillRect(data.n_x,data.n_y,32,32)
-            this.ctx.drawImage(this.assets["grass.png"],data.n_x,data.n_y);
+            this.ctx.drawImage(this.assets.list["grass.png"],data.n_x,data.n_y);
         }.bind(this));
     }
 
@@ -91,18 +104,46 @@ var MMORPG = function (x, y, options) {
         this._createCanvas();
         this._bindEvents();
 
+        var loadedimages = 0;
+        var imagesToLoad = this.assets.list;
+        var totalImages = imagesToLoad.length;
+        this.assets.list = [];
+
+        for (var i = 0; i < imagesToLoad.length ; i++) {
+            var src = imagesToLoad[i];
+            var fileName = (src.split("/"))[src.split("/").length - 1];
+
+            this.assets.list[fileName] = document.createElement("image");
+            this.assets.list[fileName].onload = function(){
+                loadedimages++;
+                if (loadedimages==totalImages){
+                    this.log(totalImages+" images loaded");
+                    this.log("STARTING THE GAME!");
+                    this._createLoop();
+                }
+            }.bind(this);
+            this.assets.list[fileName].onerror = function(){
+                this.log("ERROR: Fail to fetch image");
+            }.bind(this);
+            this.assets.list[fileName].src = src;  
+        };
+    };
+
+    this._createLoop = function(){
         var that = this;
         (function animloop(){
           requestAnimFrame(animloop);
-          that.start();
+          that.loop();
         })();
     };
 
     this.clearCanvas = function () {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
-
-    this.start = function () {
+    this.log = function(log){
+        console.log("* [LOG]",log);
+    };
+    this.loop = function () {
         this.clearCanvas();
 
         if (this.options.wireframe)
