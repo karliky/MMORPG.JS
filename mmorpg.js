@@ -3,7 +3,7 @@ var MMORPG = function (x, y, options) {
     this.start_text = "*============================================*\n";
     this.start_text += "* MMORPG By @k4rliky (karliky@gmail.com)     *\n";
     this.start_text += "* " + (new Date()) + "   *\n";
-    this.start_text += "*============================================*\n";
+    this.start_text += "*============================================*";
 
     this.x = x;
     this.y = y;
@@ -13,12 +13,14 @@ var MMORPG = function (x, y, options) {
     this.canvas = null;
     this.ctx = null;
     this._isMouseMoving = false;
+    this.window_width = window.innerWidth;
+    this.window_height = window.innerHeight;
     this.options = {
         wireframe: true,
         wireframe_tile: [],
         tiles: {
-            x: window.innerWidth / this.x,
-            y: window.innerHeight / this.y
+            x: this.window_width / this.x,
+            y: this.window_height / this.y
         }
     }
 
@@ -32,8 +34,8 @@ var MMORPG = function (x, y, options) {
     this._createCanvas = function () {
         console.log(this.start_text);
         this.canvas = document.createElement("canvas");
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        this.canvas.width = this.window_width;
+        this.canvas.height = this.window_height;
         this.canvas.id = "canvas";
         this.ctx = this.canvas.getContext("2d");
         document.body.appendChild(this.canvas);
@@ -68,11 +70,11 @@ var MMORPG = function (x, y, options) {
     this._processTouch = function(e){
     
         var tile = {};
-        tile.x = e.clientX / (window.innerWidth / this.options.tiles.x) | 0,
-        tile.y = e.clientY / (window.innerHeight / this.options.tiles.y) | 0,
+        tile.x = e.clientX / (this.window_width / this.options.tiles.x) | 0,
+        tile.y = e.clientY / (this.window_height / this.options.tiles.y) | 0,
         tile.n = this.options.tiles.x * (tile.y) + tile.x,
-        tile.n_x = (window.innerWidth / this.options.tiles.x) * tile.x,
-        tile.n_y = (window.innerHeight / this.options.tiles.y) * tile.y
+        tile.n_x = (this.window_width / this.options.tiles.x) * tile.x,
+        tile.n_y = (this.window_height / this.options.tiles.y) * tile.y
 
         switch (e.which) {
             case 1:
@@ -94,7 +96,7 @@ var MMORPG = function (x, y, options) {
 
         for (i = 0; i < this.options.tiles.y; i++) {
             this.ctx.moveTo(x, y);
-            this.ctx.lineTo(window.innerWidth, y);
+            this.ctx.lineTo(this.window_width, y);
             y += this.y;
         };
 
@@ -103,7 +105,7 @@ var MMORPG = function (x, y, options) {
 
         for (i = 0; i < this.options.tiles.x; i++) {
             this.ctx.moveTo(x, y);
-            this.ctx.lineTo(x, window.innerHeight);
+            this.ctx.lineTo(x, this.window_height);
             x += this.x;
         };
 
@@ -167,6 +169,14 @@ var MMORPG = function (x, y, options) {
     this.log = function(log){
         console.log("* [LOG]",log);
     };
+    this.setBounds = function(width,height){
+        this.window_width = width;
+        this.window_height = height;
+        this.options.tiles.x = width / this.x;
+        this.options.tiles.y = height / this.y;
+        this.canvas.width = this.window_width;
+        this.canvas.height = this.window_height;
+    }
     this.loop = function () {
         this.clearCanvas();
 

@@ -1,18 +1,22 @@
 MMORPG.prototype.GUI = {
     parent : null,
     open_box : function(){
-        if(typeof parent == null) throw new Error("Parent obj is null, use this.GUI.setInstance(this);");
+        if(this.parent == null) throw new Error("Parent obj is null, use this.GUI.setInstance(this);");
     },
     createUI: function(){
-        if(typeof parent == null) throw new Error("Parent obj is null, use this.GUI.setInstance(this);");
+        if(this.parent == null) throw new Error("Parent obj is null, use this.GUI.setInstance(this);");
 
         this.getTemplate("assets/templates/main.html",function(html){
-            var el = document.createElement('div');
-            el.innerHTML = html;
-            document.body.insertBefore(el, document.body.firstChild);
-        });
+            this.insertTemplate(html);
+        }.bind(this));
+    },
+    insertTemplate : function(html){
+        var el = document.createElement('div');
+        el.innerHTML = html;
+        document.body.insertBefore(el, document.body.firstChild);
     },
     getTemplate : function(path,callback){
+        if(this.parent == null) throw new Error("Parent obj is null, use this.GUI.setInstance(this);");
 
         var httpRequest = new XMLHttpRequest();
         httpRequest.onreadystatechange = function(){
