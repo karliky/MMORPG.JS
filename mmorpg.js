@@ -110,7 +110,7 @@ var MMORPG = function (x, y, options) {
         };
 
         this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = '#000000';
+        this.ctx.strokeStyle = '#eeeeee';
         this.ctx.stroke();
     };
 

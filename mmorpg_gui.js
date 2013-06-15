@@ -13,6 +13,11 @@ MMORPG.prototype.GUI = {
         this.getTemplate("assets/templates/tile_selector.html",function(html){
             this.insertTemplate(html);
             $( "#tile_selector" ).draggable({ handle: ".title" });
+            var create_tile_set = document.getElementById("create_tile_set");
+            create_tile_set.addEventListener("click",function(){
+                console.log("Creando ");
+            }.bind(this), false);
+
         }.bind(this));
     },
     insertTemplate : function(html){
