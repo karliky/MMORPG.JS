@@ -9,6 +9,11 @@ MMORPG.prototype.GUI = {
         this.getTemplate("assets/templates/main.html",function(html){
             this.insertTemplate(html);
         }.bind(this));
+
+        this.getTemplate("assets/templates/tile_selector.html",function(html){
+            this.insertTemplate(html);
+            $( "#tile_selector" ).draggable({ handle: ".title" });
+        }.bind(this));
     },
     insertTemplate : function(html){
         var el = document.createElement('div');
