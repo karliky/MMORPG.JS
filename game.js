@@ -1,5 +1,5 @@
 window.onload = function(){
-	var adt = new MMORPG(32,32);
-	adt.init();
+	var map = new MMORPG(32,32);
+	map.init();
 };
 

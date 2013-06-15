@@ -1,0 +1,55 @@
+#cssmenu ul {
+  list-style-type: none;
+  width: 100%;
+  position: absolute;
+  display: block;
+  height: 33px;
+  font-size: .6em;
+  background: url(images/bg.png) repeat-x top left;
+  font-family: Verdana,Helvetica,Arial,sans-serif;
+  border: 1px solid #000;
+  margin: 0;
+  padding: 0;
+}
+#cssmenu{
+	opacity:0.6;
+
+}
+#cssmenu:hover{
+	opacity:1;
+}
+#cssmenu li {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+#cssmenu li a {
+  float: left;
+  color: #A79787;
+  text-decoration: none;
+  height: 24px;
+  padding: 9px 15px 0;
+  font-weight: normal;
+}
+
+#cssmenu li a:hover,
+#cssmenu .active {
+  color: #fff;
+  background: url(images/bg.png) repeat-x top left;
+  text-decoration: none;
+}
+
+#cssmenu .active a {
+  color: #fff;
+  font-weight: 700;
+}
+
+#cssmenu ul {
+  background-color: #B11718;
+}
+
+#cssmenu li a:hover, #cssmenu li.active {
+  background-color: #DE3330;
+}

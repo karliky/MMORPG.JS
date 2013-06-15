@@ -52,19 +52,37 @@ var MMORPG = function (x, y, options) {
             this._isMouseMoving = false;
         }.bind(this),false);
         this.canvas.addEventListener("mousemove",function(e){
-            
             if(!this._isMouseMoving) return;
-            
-            var tile = {};
-            tile.x = e.clientX / (window.innerWidth / this.options.tiles.x) | 0,
-            tile.y = e.clientY / (window.innerHeight / this.options.tiles.y) | 0,
-            tile.n = this.options.tiles.x * (tile.y) + tile.x,
-            tile.n_x = (window.innerWidth / this.options.tiles.x) * tile.x,
-            tile.n_y = (window.innerHeight / this.options.tiles.y) * tile.y
-
-            this.options.wireframe_tile[tile.n] = tile;
-
+            this._processTouch(e);
         }.bind(this),false);
+        this.canvas.addEventListener("click",function(e){
+            this._processTouch(e);
+        }.bind(this),false);
+        document.body.addEventListener("contextmenu",function(e){
+            e.preventDefault();
+            this._processTouch(e);
+            return false;
+        }.bind(this),false);
+    };
+
+    this._processTouch = function(e){
+    
+        var tile = {};
+        tile.x = e.clientX / (window.innerWidth / this.options.tiles.x) | 0,
+        tile.y = e.clientY / (window.innerHeight / this.options.tiles.y) | 0,
+        tile.n = this.options.tiles.x * (tile.y) + tile.x,
+        tile.n_x = (window.innerWidth / this.options.tiles.x) * tile.x,
+        tile.n_y = (window.innerHeight / this.options.tiles.y) * tile.y
+
+        switch (e.which) {
+            case 1:
+                this.options.wireframe_tile[tile.n] = tile;
+                break;
+            case 3:
+                this.options.wireframe_tile[tile.n] = undefined;
+            break;
+        }
+        
     };
 
     this._drawWireframe = function () {
@@ -96,7 +114,8 @@ var MMORPG = function (x, y, options) {
 
     this._drawTiles = function(){
         this.options.wireframe_tile.forEach(function(data,i){
-            this.ctx.drawImage(this.assets.list["grass.png"],data.n_x,data.n_y);
+            if(typeof data != "undefined")
+                this.ctx.drawImage(this.assets.list["grass.png"],data.n_x,data.n_y);
         }.bind(this));
     }
 
@@ -114,14 +133,19 @@ var MMORPG = function (x, y, options) {
             var fileName = (src.split("/"))[src.split("/").length - 1];
 
             this.assets.list[fileName] = document.createElement("image");
+            
             this.assets.list[fileName].onload = function(){
                 loadedimages++;
                 if (loadedimages==totalImages){
                     this.log(totalImages+" images loaded");
                     this.log("STARTING THE GAME!");
+
+                    this.GUI.setInstance(this);
+                    this.GUI.createUI();
                     this._createLoop();
                 }
             }.bind(this);
+            
             this.assets.list[fileName].onerror = function(){
                 this.log("ERROR: Fail to fetch image");
             }.bind(this);
