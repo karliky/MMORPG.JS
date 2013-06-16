@@ -146,7 +146,7 @@ a{
   right: 3%;
   top: 10%;
   width: 200px;
-  height: 200px;
+  min-height: 200px;
   border: 1px solid #71b00c;
   border-bottom: 2px solid #71b00c;
   background-color: #32323a;
@@ -178,4 +178,19 @@ a{
 }
 .floating_box .title:hover{
   cursor:move;
-};
+}
+.floating_box .sub_title{
+  background: #444444;
+  border-bottom: 1px dotted #333333;
+}
+.floating_box .sub_title:hover{
+  cursor: auto;
+}
+.tile_mapper{
+  width: 600px;
+  opacity: 1;
+  cursor: auto;
+  display: none;
+  right: auto;
+  left: auto;
+}
