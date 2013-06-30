@@ -1,8 +1,10 @@
 var MMORPG = function (x, y, options) {
+    
+    this.start_time = new Date();
 
     this.start_text = "*============================================*\n";
     this.start_text += "* MMORPG By @k4rliky (karliky@gmail.com)     *\n";
-    this.start_text += "* " + (new Date()) + "   *\n";
+    this.start_text += "* " + (this.start_time.getDate() + "/" + (this.start_time.getMonth() + 1) + "/" + this.start_time.getFullYear()) + ""+(Array(35).join(" "))+"*\n";
     this.start_text += "*============================================*";
 
     this.x = x;
@@ -43,7 +45,9 @@ var MMORPG = function (x, y, options) {
 
     this.point2D = {
         x: 0,
-        y: 0
+        y: 0,
+        w: 0,
+        h: 0
     }
     
     this._bindEvents = function(){
@@ -142,8 +146,8 @@ var MMORPG = function (x, y, options) {
                     this.log(totalImages+" images loaded");
                     this.log("STARTING THE GAME!");
 
-                    this.GUI.setInstance(this);
-                    this.GUI.createUI();
+
+                    this.GUI(this).createUI();
                     this._createLoop();
                 }
             }.bind(this);
